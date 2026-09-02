@@ -1,0 +1,8 @@
+<!-- templates/post_list.html-->
+
+<h1>Message Board Homepage</h1>
+<ul>
+    {% for post in name_demo %}
+    <li>{{ post.text }}</li>
+    {% endfor %}
+</ul>
