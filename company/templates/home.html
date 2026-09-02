@@ -1,2 +1,17 @@
 <!-- templates/home.html-->
-<h1>Company Homepages</h1>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Company Homepage</h1>
+<p>The current date and time is: {% now "DATETIME_FORMAT"%}</p>
+<p>There are {{ inventory_list|length }} items of inventory.</p>
+<ul>
+    {% for item in inventory_list %}
+    <li>{{ item }}</li>
+    <h3>test</h3>
+    {% endfor %}
+
+</ul>
+<p>{{greeting| title}}</p>
+{% comment %} Add more content here! {% endcomment %}
+{% endblock %}
