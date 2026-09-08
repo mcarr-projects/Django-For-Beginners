@@ -3,7 +3,7 @@
 {% block stuff %}
 <h1>CSS Example Coloring</h1>
 
-{% for post in posts %}
+{% for post in post_list %}
 <div class="post-entry">
     <h2><a href="{{ post.get_absolute_url }}">{{ post.title}}</a></h2>
     <p>Author: {{post.author}}</p>
