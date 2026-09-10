@@ -18,6 +18,9 @@ class BlogTests(TestCase):
             author=cls.user,
         )
 
+    def assert_has_csrf_token(self, response):
+        self.assertContains(response, 'name="csrfmiddlewaretoken"')
+
     def test_post_model(self):
         self.assertEqual(self.post.title, "A good title")
         self.assertEqual(self.post.body, "Nice body content")
@@ -46,3 +49,35 @@ class BlogTests(TestCase):
         self.assertEqual(no_response.status_code, 404)
         self.assertContains(response, "A good title")
         self.assertTemplateUsed(response, "post_detail.html")
+
+    def test_post_createview(self):
+        form_response = self.client.get(reverse("post_new"))
+        self.assert_has_csrf_token(form_response)
+        response = self.client.post(
+            reverse("post_new"),
+            {"title": "New title", "body": "New text", "author": self.user.id},
+        )
+        print(f"Get response :{form_response}")
+        print("\n", form_response.headers, "\n")
+        print("***BEGIN***", form_response.content.decode(), "***END***")
+        print(f"Post response:{response}")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Post.objects.last().title, "New title")
+        self.assertEqual(Post.objects.last().body, "New text")
+
+    def test_post_updateview(self):
+        response = self.client.post(
+            reverse("post_edit", args="1"),
+            {
+                "title": "Updated title",
+                "body": "Updated body",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Post.objects.last().title, "Updated title")
+        self.assertEqual(Post.objects.last().body, "Updated body")
+
+    def test_post_deleteview(self):
+        response = self.client.post(reverse("post_delete", args="1"))
+        self.assertEqual(response.status_code, 302)
